@@ -21,6 +21,7 @@ import {
     CalendarToday,
     Checklist,
     ChevronRight,
+    Diamond,
     ExpandLess,
     ExpandMore,
     Feed,
@@ -330,6 +331,12 @@ function allStartItems(toggleExpansion: (item: string) => void): NavbarItem[] {
                     name: 'Courses',
                     icon: <ImportContacts />,
                     href: '/courses',
+                },
+                {
+                    id: 'subscribe',
+                    name: 'Membership',
+                    icon: <Diamond />,
+                    href: '/prices',
                 },
                 {
                     id: 'merch',
