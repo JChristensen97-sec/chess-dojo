@@ -261,6 +261,7 @@ export interface DiscordNotificationSettings {
     disableMeetingCancellation: boolean;
     disableCalendarInvite: boolean;
     disableRoundRobinStart: boolean;
+    disableGameReviewSubmitted?: boolean;
 }
 
 export interface EmailNotificationSettings {
