@@ -66,7 +66,11 @@ const PieChart: React.FC<PieChartProps> = ({
                         <Tooltip
                             id={id}
                             getContent={() =>
-                                hovered === null ? undefined : getTooltip(data[hovered])
+                                hovered === null ? undefined : (
+                                    <div style={{ whiteSpace: 'pre-line' }}>
+                                        {getTooltip(data[hovered])}
+                                    </div>
+                                )
                             }
                         />
                     </Box>

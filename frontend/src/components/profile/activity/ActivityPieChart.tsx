@@ -31,12 +31,6 @@ function getScoreChartTooltip(entry?: PieChartData) {
  * @param entry The PieChartData entry to get the tooltip for.
  * @returns The string for the tooltip.
  */
-function getTimeChartTooltip(entry?: PieChartData) {
-    if (!entry) {
-        return '';
-    }
-    return `${entry.name} - ${getTimeDisplay(entry.value)}`;
-}
 
 /**
  * Converts a number of minutes to a display string in the format `1h 23m`.
@@ -126,6 +120,43 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
         );
     }, [user, cohorts, timeframe, timeline.entries, timeChartCategory, requirements]);
 
+    const getTimeChartTooltip = (entry?: PieChartData) => {
+        if (!entry) {
+            return '';
+        }
+
+        const base = `${entry.name} - ${getTimeDisplay(entry.value)}`;
+
+        if (timeChartCategory) {
+            return base;
+        }
+
+        const breakdown = [
+            ...getTimeChartData(
+                user,
+                cohorts,
+                timeframe,
+                timeline.entries,
+                entry.name,
+                requirements,
+            ),
+        ].sort((a, b) => b.value - a.value);
+
+        if (!breakdown.length) {
+            return base;
+        }
+
+        return (
+            <div>
+                <div style={{ fontWeight: 700, marginBottom: 4 }}>{base}</div>
+                {breakdown.map((item) => (
+                    <div key={item.name} style={{ paddingLeft: 8 }}>
+                        {item.name} - {getTimeDisplay(item.value)}
+                    </div>
+                ))}
+            </div>
+        );
+    };
     const onChangeCohort = (newCohorts: string[]) => {
         setScoreChartCategory('');
         setTimeChartCategory('');
