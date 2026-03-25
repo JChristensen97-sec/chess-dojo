@@ -15,16 +15,6 @@ import { UseTimelineResponse } from './useTimeline';
  * @param entry The PieChartData entry to get the tooltip for.
  * @returns The string for the tooltip.
  */
-function getScoreChartTooltip(entry?: PieChartData) {
-    if (!entry) {
-        return '';
-    }
-    const score = Math.round(entry.value * 100) / 100;
-    if (entry.count) {
-        return `${entry.name} - Count: ${entry.count}, Score: ${score}`;
-    }
-    return `${entry.name} - ${score}`;
-}
 
 /**
  * Returns a string for the time chart tooltip.
@@ -157,6 +147,53 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
             </div>
         );
     };
+
+    const getScoreChartTooltip = (entry?: PieChartData) => {
+        if (!entry) {
+            return '';
+        }
+
+        const score = Math.round(entry.value * 100) / 100;
+        const base = entry.count
+            ? `${entry.name} - Count: ${entry.count}, Score: ${score}`
+            : `${entry.name} - ${score}`;
+
+        if (scoreChartCategory) {
+            return <div>{base}</div>;
+        }
+
+        const breakdown = [
+            ...getScoreChartData(
+                user,
+                cohorts,
+                timeframe,
+                timeline.entries,
+                entry.name,
+                requirements,
+            ),
+        ].sort((a, b) => b.value - a.value);
+
+        if (!breakdown.length) {
+            return <div>{base}</div>;
+        }
+
+        return (
+            <div>
+                <div style={{ fontWeight: 700, marginBottom: 4 }}>{base}</div>
+                {breakdown.map((item) => {
+                    const childScore = Math.round(item.value * 100) / 100;
+                    return (
+                        <div key={item.name} style={{ paddingLeft: 8 }}>
+                            {item.count
+                                ? `${item.name} - Count: ${item.count}, Score: ${childScore}`
+                                : `${item.name} - ${childScore}`}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
     const onChangeCohort = (newCohorts: string[]) => {
         setScoreChartCategory('');
         setTimeChartCategory('');
