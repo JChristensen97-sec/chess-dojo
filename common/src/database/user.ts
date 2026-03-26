@@ -54,6 +54,9 @@ export interface User {
     timezoneOverride: string;
     timeFormat: TimeFormat;
 
+    /** The user's preferred language for the UI (e.g. "de", "es"). Empty/undefined = English. */
+    language?: string;
+
     hasCreatedProfile: boolean;
 
     customTasks?: CustomTask[];
@@ -132,6 +135,9 @@ export interface User {
 
     /** The ID of the task associated with the timer, if any. */
     timerTaskId?: string;
+
+    /** Tracks which milestone notifications have been sent for this user. Ex: '85_2000-2100' */
+    sentMilestoneNotifications?: string[];
 }
 
 /**
@@ -255,6 +261,7 @@ export interface DiscordNotificationSettings {
     disableMeetingCancellation: boolean;
     disableCalendarInvite: boolean;
     disableRoundRobinStart: boolean;
+    disableGameReviewSubmitted?: boolean;
 }
 
 export interface EmailNotificationSettings {
