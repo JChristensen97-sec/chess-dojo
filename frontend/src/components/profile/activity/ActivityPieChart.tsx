@@ -11,18 +11,6 @@ import PieChart, { PieChartData } from './PieChart';
 import { UseTimelineResponse } from './useTimeline';
 
 /**
- * Returns a string for the score chart tooltip.
- * @param entry The PieChartData entry to get the tooltip for.
- * @returns The string for the tooltip.
- */
-
-/**
- * Returns a string for the time chart tooltip.
- * @param entry The PieChartData entry to get the tooltip for.
- * @returns The string for the tooltip.
- */
-
-/**
  * Converts a number of minutes to a display string in the format `1h 23m`.
  * @param value The time to display in minutes.
  * @returns The time as a display string.
@@ -110,6 +98,16 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
         );
     }, [user, cohorts, timeframe, timeline.entries, timeChartCategory, requirements]);
 
+    /**
+     * Returns tooltip content for a hovered time chart slice.
+     *
+     * On the top-level chart, this includes the parent category score and its
+     * subcategory breakdown. On a drilled-in chart, it shows only the hovered
+     * subcategory values.
+     *
+     * @param entry The hovered pie chart entry.
+     * @returns The tooltip content for that entry.
+     */
     const getTimeChartTooltip = (entry?: PieChartData) => {
         if (!entry) {
             return '';
@@ -148,6 +146,16 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
         );
     };
 
+    /**
+     * Returns tooltip content for a hovered score chart slice.
+     *
+     * On the top-level chart, this includes the parent category score and its
+     * subcategory breakdown. On a drilled-in chart, it shows only the hovered
+     * subcategory values.
+     *
+     * @param entry The hovered pie chart entry.
+     * @returns The tooltip content for that entry.
+     */
     const getScoreChartTooltip = (entry?: PieChartData) => {
         if (!entry) {
             return '';
