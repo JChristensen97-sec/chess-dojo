@@ -3,13 +3,32 @@ import { useAuth } from '@/auth/Auth';
 import MultipleSelectChip from '@/components/ui/MultipleSelectChip';
 import { ALL_COHORTS, compareCohorts, User } from '@/database/user';
 import CohortIcon from '@/scoreboard/CohortIcon';
-import Icon from '@/style/Icon';
+import Icon, { type IconName } from '@/style/Icon';
 import { Box, Button, Grid, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { displayTimeframe, getScoreChartData, getTimeChartData, Timeframe } from './activity';
 import PieChart, { PieChartData } from './PieChart';
 import { UseTimelineResponse } from './useTimeline';
+
+/**
+ * Maps activity pie chart category labels to icon names for tooltip display.
+ *
+ * @param name The displayed activity category name.
+ * @returns The matching icon name, if one exists.
+ */
+const getCategoryIconName = (name: string): IconName | undefined => {
+    const iconMap: Record<string, IconName> = {
+        'Games + Analysis': 'Games + Analysis',
+        Tactics: 'Tactics',
+        'Middlegames + Strategy': 'Middlegames + Strategy',
+        Endgame: 'Endgame',
+        Opening: 'Opening',
+        'Welcome to the Dojo': 'Welcome to the Dojo',
+    };
+
+    return iconMap[name];
+};
 
 /**
  * Converts a number of minutes to a display string in the format `1h 23m`.
@@ -118,7 +137,7 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
             return (
                 <Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
-                        <Icon name={entry.name as any} fontSize='small' />
+                        <Icon name={getCategoryIconName(entry.name)} fontSize='small' />
                         <Box>{entry.name}</Box>
                     </Box>
                     <Box sx={{ fontWeight: 700 }}>{getTimeDisplay(entry.value)}</Box>
@@ -149,7 +168,7 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
                     }}
                 >
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                        <Icon name={entry.name as any} fontSize='small' />
+                        <Icon name={getCategoryIconName(entry.name)} fontSize='small' />
                         <Box sx={{ fontSize: '1rem', fontWeight: 700 }}>{entry.name}</Box>
                     </Box>
 
@@ -197,7 +216,7 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
             return (
                 <Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
-                        <Icon name={entry.name as any} fontSize='small' />
+                        <Icon name={getCategoryIconName(entry.name)} fontSize='small' />
                         <Box>{entry.name}</Box>
                     </Box>
                     <Box>{entry.count ? `Count: ${entry.count}, Score: ${score}` : score}</Box>
@@ -228,7 +247,7 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
                     }}
                 >
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                        <Icon name={entry.name as any} fontSize='small' />
+                        <Icon name={getCategoryIconName(entry.name)} fontSize='small' />
                         <Box sx={{ fontSize: '1rem', fontWeight: 700 }}>{entry.name}</Box>
                     </Box>
 
