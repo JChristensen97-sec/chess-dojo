@@ -3,7 +3,8 @@ import { useAuth } from '@/auth/Auth';
 import MultipleSelectChip from '@/components/ui/MultipleSelectChip';
 import { ALL_COHORTS, compareCohorts, User } from '@/database/user';
 import CohortIcon from '@/scoreboard/CohortIcon';
-import { Button, Grid, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import Icon from '@/style/Icon';
+import { Box, Button, Grid, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { displayTimeframe, getScoreChartData, getTimeChartData, Timeframe } from './activity';
@@ -101,7 +102,7 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
     /**
      * Returns tooltip content for a hovered time chart slice.
      *
-     * On the top-level chart, this includes the parent category score and its
+     * On the top-level chart, this includes the parent category time and its
      * subcategory breakdown. On a drilled-in chart, it shows only the hovered
      * subcategory values.
      *
@@ -113,10 +114,16 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
             return '';
         }
 
-        const base = `${entry.name} - ${getTimeDisplay(entry.value)}`;
-
         if (timeChartCategory) {
-            return base;
+            return (
+                <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
+                        <Icon name={entry.name as any} fontSize='small' />
+                        <Box>{entry.name}</Box>
+                    </Box>
+                    <Box sx={{ fontWeight: 700 }}>{getTimeDisplay(entry.value)}</Box>
+                </Box>
+            );
         }
 
         const breakdown = [
@@ -130,19 +137,42 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
             ),
         ].sort((a, b) => b.value - a.value);
 
-        if (!breakdown.length) {
-            return base;
-        }
-
         return (
-            <div>
-                <div style={{ fontWeight: 700, marginBottom: 4 }}>{base}</div>
+            <Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 1,
+                        mb: 0.75,
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <Icon name={entry.name as any} fontSize='small' />
+                        <Box sx={{ fontSize: '1rem', fontWeight: 700 }}>{entry.name}</Box>
+                    </Box>
+
+                    <Box sx={{ fontSize: '1rem', fontWeight: 700 }}>
+                        {getTimeDisplay(entry.value)}
+                    </Box>
+                </Box>
+
                 {breakdown.map((item) => (
-                    <div key={item.name} style={{ paddingLeft: 8 }}>
-                        {item.name} - {getTimeDisplay(item.value)}
-                    </div>
+                    <Box key={item.name} sx={{ pl: 1, mb: 0.25 }}>
+                        <Box component='span' sx={{ fontWeight: 700 }}>
+                            {item.name}
+                        </Box>{' '}
+                        - {getTimeDisplay(item.value)}
+                    </Box>
                 ))}
-            </div>
+
+                {!!breakdown.length && (
+                    <Box sx={{ mt: 0.75, fontSize: '0.75rem', opacity: 0.8 }}>
+                        Click for more details
+                    </Box>
+                )}
+            </Box>
         );
     };
 
@@ -162,12 +192,17 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
         }
 
         const score = Math.round(entry.value * 100) / 100;
-        const base = entry.count
-            ? `${entry.name} - Count: ${entry.count}, Score: ${score}`
-            : `${entry.name} - ${score}`;
 
         if (scoreChartCategory) {
-            return <div>{base}</div>;
+            return (
+                <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
+                        <Icon name={entry.name as any} fontSize='small' />
+                        <Box>{entry.name}</Box>
+                    </Box>
+                    <Box>{entry.count ? `Count: ${entry.count}, Score: ${score}` : score}</Box>
+                </Box>
+            );
         }
 
         const breakdown = [
@@ -181,24 +216,47 @@ const ActivityPieChart: React.FC<ActivityPieChartProps> = ({ user, timeline }) =
             ),
         ].sort((a, b) => b.value - a.value);
 
-        if (!breakdown.length) {
-            return <div>{base}</div>;
-        }
-
         return (
-            <div>
-                <div style={{ fontWeight: 700, marginBottom: 4 }}>{base}</div>
+            <Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 1,
+                        mb: 0.75,
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <Icon name={entry.name as any} fontSize='small' />
+                        <Box sx={{ fontSize: '1rem', fontWeight: 700 }}>{entry.name}</Box>
+                    </Box>
+
+                    <Box sx={{ fontSize: '1rem', fontWeight: 700 }}>
+                        {entry.count ? `Count: ${entry.count}, Score: ${score}` : score}
+                    </Box>
+                </Box>
+
                 {breakdown.map((item) => {
                     const childScore = Math.round(item.value * 100) / 100;
+
                     return (
-                        <div key={item.name} style={{ paddingLeft: 8 }}>
-                            {item.count
-                                ? `${item.name} - Count: ${item.count}, Score: ${childScore}`
-                                : `${item.name} - ${childScore}`}
-                        </div>
+                        <Box key={item.name} sx={{ pl: 1, mb: 0.25 }}>
+                            <Box component='span' sx={{ fontWeight: 700 }}>
+                                {item.name}
+                            </Box>{' '}
+                            -{' '}
+                            {item.count ? `Count: ${item.count}, Score: ${childScore}` : childScore}
+                        </Box>
                     );
                 })}
-            </div>
+
+                {!!breakdown.length && (
+                    <Box sx={{ mt: 0.75, fontSize: '0.75rem', opacity: 0.8 }}>
+                        Click for more details
+                    </Box>
+                )}
+            </Box>
         );
     };
 
