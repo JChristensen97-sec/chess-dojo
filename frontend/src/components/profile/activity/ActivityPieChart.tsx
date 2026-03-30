@@ -1,6 +1,7 @@
 import { useRequirements } from '@/api/cache/requirements';
 import { useAuth } from '@/auth/Auth';
 import MultipleSelectChip from '@/components/ui/MultipleSelectChip';
+import { RequirementCategory } from '@/database/requirement';
 import { ALL_COHORTS, compareCohorts, User } from '@/database/user';
 import CohortIcon from '@/scoreboard/CohortIcon';
 import Icon, { type IconName } from '@/style/Icon';
@@ -19,12 +20,12 @@ import { UseTimelineResponse } from './useTimeline';
  */
 const getCategoryIconName = (name: string): IconName | undefined => {
     const iconMap: Record<string, IconName> = {
-        'Games + Analysis': 'Games + Analysis',
-        Tactics: 'Tactics',
-        'Middlegames + Strategy': 'Middlegames + Strategy',
-        Endgame: 'Endgame',
-        Opening: 'Opening',
-        'Welcome to the Dojo': 'Welcome to the Dojo',
+        'Games + Analysis': RequirementCategory.Games,
+        Tactics: RequirementCategory.Tactics,
+        'Middlegames + Strategy': RequirementCategory.Middlegames,
+        Endgame: RequirementCategory.Endgame,
+        Opening: RequirementCategory.Opening,
+        'Welcome to the Dojo': RequirementCategory.Welcome,
     };
 
     return iconMap[name];
